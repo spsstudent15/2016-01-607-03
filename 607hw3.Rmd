@@ -1,0 +1,19 @@
+---
+title: "Data 607 Homework 3"
+author: "Armenoush Aslanian-Persico"
+output: html_document
+css: style.css
+---
+
+### Begin in SQL
+
+```{r}
+
+
+```
+
+
+```sql
+`r paste(readLines('tb.sql'), collapse = '\n')`
+```
+

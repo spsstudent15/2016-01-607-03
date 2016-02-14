@@ -1,0 +1,112 @@
+
+---
+title: "Data 607 Week 3 - Tuberculosis Rates"
+author: "Armenoush Aslanian-Persico"
+output: html_document
+css: C:/data/style.css
+---
+
+### 0. Optional: <a href="https://raw.githubusercontent.com/spsstudent15/msda20161/master/style.css">Download CSS Stylesheet here.</a>
+#### Save into working directory.
+```{r}
+getwd()
+```
+
+### 1. Load packages
+```{r warning=FALSE, echo=FALSE}
+library('rvest')
+library('devtools')
+library('RCurl')
+library('plyr')
+library('dplyr')
+library('knitr')
+```
+
+### 2. Create a CSV file using SQL.
+
+#### Resulting CSV file was uploaded to GitHub for Step 2.
+```sql
+`r paste(readLines('C:/data/tb.sql'), collapse = '\n')`
+```
+
+### 3. Import CSV file from GitHub.
+#### Indicate "header=F" for missing header row.
+```{r}
+x <- getURL("https://raw.githubusercontent.com/spsstudent15/msda20161/master/tb3.csv")
+dftb<-data.frame(read.csv(text=x, header=F, stringsAsFactors = F))
+
+```
+
+
+### 4. View data frame dimensions, head, structure.
+```{r}
+dim(dftb)
+head(dftb)
+str(dftb)
+```
+#### This returns 1900 records for 9 variables and shows we need to convert character columns to numeric.
+
+
+### 5. Convert character columns to numeric. This converts NA values to 0.
+```{r}
+dftb$V4<-as.numeric(dftb$V4)
+dftb$V5<-as.numeric(dftb$V5)
+dftb$V6<-as.numeric(dftb$V6)
+dftb$V7<-as.numeric(dftb$V7)
+dftb$V9<-as.numeric(dftb$V9)
+```
+### 6. View head and structure.
+```{r}
+str(dftb)
+head(dftb)
+```
+
+
+### 7. Group by year, create bar plot.
+#### Check against Excel and SQL:
+
+#### 1995: 494742 total cases
+#### 1996: 615510 total cases
+```{r}
+grpyear<-aggregate(cbind(V7) ~ V3, data = dftb, sum)
+grpyear
+
+barplot(
+  as.numeric(grpyear$V7/1000000), 
+  names=grpyear$V3, 
+  xlab="Year",
+  ylab="Cases in Millions",
+  main="Worldwide Tuberculosis Cases by Year", 
+  border="black", 
+  col="blue", 
+  ylim=c(0,5))
+
+```
+
+
+### 8. Rename column headers.
+```{r}
+colnames(dftb) <-c(
+  "CID",
+  "COUNTRY",
+  "YEAR",
+  "CHILD",
+  "ADULT",
+  "ELDERLY",
+  "TOTAL", 
+  "COUNTRY_POPULATION", 
+  "RATE")
+
+```
+
+### 9. What kind of analysis and reporting could be done with this data?
+#### We could see trends of increasing rates in specific countries and adjust public policy and funding to address those issues. We could also see which countries are missing data.
+
+### 10. Table output.
+#### Format table with Kable package.
+```{r}
+tb3s <- subset(dftb,select= c( 2,3,9))
+summary(tb3s)
+kable(tb3s,align="c",caption="Tuberculosis Infection Rates Per Capita by Country and Year")
+```
+

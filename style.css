@@ -1,0 +1,19 @@
+
+
+@media print {
+tr.vendorListHeading {
+    background-color: #e3f2fd !important;
+    -webkit-print-color-adjust: exact; 
+}}
+
+@media print {
+    .vendorListHeading th {
+    color: #e3f2fd !important;
+}}
+
+body, td {
+   font-family: sans-serif;
+   background-color: #e3f2fd;
+   font-size: 13px;
+font-color: #000000
+}
